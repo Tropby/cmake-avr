@@ -181,11 +181,15 @@ function(add_avr_executable EXECUTABLE_NAME)
    # elf file
    add_executable(${elf_file} EXCLUDE_FROM_ALL ${ARGN})
 
+   if(AVR_USE_FLOATS)
+        set(FLOAT "-Wl,-u,vfprintf -lprintf_flt -lm")
+   endif()
+
    set_target_properties(
       ${elf_file}
       PROPERTIES
          COMPILE_FLAGS "-mmcu=${AVR_MCU}"
-         LINK_FLAGS "-mmcu=${AVR_MCU} -Wl,--gc-sections -mrelax -Wl,-Map,${map_file}"
+         LINK_FLAGS "-mmcu=${AVR_MCU} -Wl,--gc-sections -mrelax -Wl,-Map,${map_file} ${FLOAT}" 
    )
 
    add_custom_command(
